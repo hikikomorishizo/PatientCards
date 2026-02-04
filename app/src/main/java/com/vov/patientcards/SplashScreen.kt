@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -59,16 +61,31 @@ fun SplashScreen(
     val alpha = remember { Animatable(0f) }
     val scale = remember { Animatable(0.9f) }
 
+    var finished by remember { mutableStateOf(false) }
+
+    fun finish() {
+        if (!finished) {
+            finished = true
+            onFinished()
+        }
+    }
+
     LaunchedEffect(Unit) {
-        alpha.animateTo(1f, tween(1000))
-        scale.animateTo(1f, tween(1000))
+        alpha.animateTo(1f, tween(600))
+        scale.animateTo(1f, tween(600))
         delay(2000)
-        onFinished()
+        finish()
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                finish()
+            }
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
