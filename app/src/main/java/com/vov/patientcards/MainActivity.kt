@@ -1,5 +1,7 @@
 package com.vov.patientcards
 
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.dp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.vov.patientcards.ui.theme.PatientCardsTheme
+import com.vov.patientcards.ui.SplashScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,10 +22,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PatientCardsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+                var showSplash by remember { mutableStateOf(true) }
+
+                if (showSplash) {
+                    SplashScreen(
+                        onFinished = { showSplash = false }
+                    )
+                } else {
                     Greeting(
                         name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }
