@@ -9,18 +9,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
 
 @Composable
 fun PatientsScreen() {
 
+    var sortType by remember { mutableStateOf(SortType.ALPHABET) }
+
     val patients = listOf(
-        Patient(1, "Иван", "Алексеев"),
-        Patient(2, "Анна", "Архипова"),
-        Patient(3, "Борис", "Белов"),
-        Patient(4, "Вера", "Быкова"),
+        Patient(1, "Иван", "Алексеев", LocalDate.of(2024, 2, 1)),
+        Patient(2, "Анна", "Архипова", LocalDate.of(2024, 2, 3)),
+        Patient(3, "Борис", "Белов", LocalDate.of(2024, 1, 28)),
+        Patient(4, "Вера", "Быкова", LocalDate.of(2024, 2, 3)),
     )
 
-    val groupedPatients = patients.groupBy { it.lastName.first() }
+    val dateFormatter = DateTimeFormatter.ofPattern(
+        "d MMMM yyyy",
+        Locale("ru")
+    )
+    val groupedPatients = when (sortType) {
+
+        SortType.ALPHABET -> {
+            patients
+                .sortedBy { it.lastName }
+                .groupBy { it.lastName.first().toString() }
+        }
+
+        SortType.DATE -> {
+            patients
+                .sortedByDescending { it.createdAt }
+                .groupBy { it.createdAt.format(dateFormatter) }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -44,23 +68,30 @@ fun PatientsScreen() {
             }
         }
 
+        Spacer(modifier = Modifier.height(12.dp))
+
+        SortToggle(
+            selected = sortType,
+            onSelectedChange = { sortType = it }
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // ====== LIST ======
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            groupedPatients.forEach { (letter, patientsByLetter) ->
+            groupedPatients.forEach { (header, patientsInGroup) ->
 
                 item {
                     Text(
-                        text = letter.toString(),
+                        text = header,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
 
-                items(patientsByLetter) { patient ->
+                items(patientsInGroup) { patient ->
                     PatientRow(patient)
                 }
             }
