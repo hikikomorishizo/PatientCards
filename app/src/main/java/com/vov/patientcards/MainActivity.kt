@@ -13,27 +13,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.vov.patientcards.ui.theme.PatientCardsTheme
 import com.vov.patientcards.ui.SplashScreen
+import com.vov.patientcards.ui.navigation.BottomBar
+import com.vov.patientcards.ui.navigation.AppNavHost
+import androidx.compose.foundation.layout.Box
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
-            PatientCardsTheme {
+            val navController = rememberNavController()
 
-                var showSplash by remember { mutableStateOf(true) }
-
-                if (showSplash) {
-                    SplashScreen(
-                        onFinished = { showSplash = false }
-                    )
-                } else {
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(16.dp)
-                    )
+            Scaffold(
+                bottomBar = {
+                    BottomBar(navController)
+                }
+            ) { padding ->
+                Box(
+                    modifier = Modifier.padding(padding)
+                ) {
+                    AppNavHost(navController)
                 }
             }
         }
