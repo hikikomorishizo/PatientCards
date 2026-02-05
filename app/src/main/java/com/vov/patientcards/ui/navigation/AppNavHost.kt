@@ -6,6 +6,7 @@ import androidx.navigation.compose.*
 import com.vov.patientcards.ui.screens.home.HomeScreen
 import com.vov.patientcards.ui.screens.patients.PatientsScreen
 import com.vov.patientcards.ui.screens.calendar.CalendarScreen
+import com.vov.patientcards.ui.screens.about.AboutScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -21,6 +22,9 @@ fun AppNavHost(navController: NavHostController) {
         }
         composable(Screen.Calendar.route) {
             CalendarScreen()
+        }
+        composable(Screen.About.route) {
+            AboutScreen()
         }
     }
 }
