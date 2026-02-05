@@ -1,12 +1,10 @@
 package com.vov.patientcards
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.unit.dp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,10 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.vov.patientcards.ui.theme.PatientCardsTheme
-import com.vov.patientcards.ui.SplashScreen
 import com.vov.patientcards.ui.navigation.BottomBar
 import com.vov.patientcards.ui.navigation.AppNavHost
 import androidx.compose.foundation.layout.Box
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.vov.patientcards.ui.navigation.Screen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,14 +27,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
+            val currentBackStack by navController.currentBackStackEntryAsState()
+            val currentRoute = currentBackStack?.destination?.route
+
             Scaffold(
                 bottomBar = {
-                    BottomBar(navController)
+                    if (currentRoute != Screen.Splash.route) {
+                        BottomBar(navController)
+                    }
                 }
             ) { padding ->
-                Box(
-                    modifier = Modifier.padding(padding)
-                ) {
+                Box(modifier = Modifier.padding(padding)) {
                     AppNavHost(navController)
                 }
             }
